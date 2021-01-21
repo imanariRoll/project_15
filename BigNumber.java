@@ -230,20 +230,72 @@ public class BigNumber // acts as LinkedList class
  *     MEMORY- COMPLEXITY:
      */
     
-    public BigNumber addLong (long num){
-        BigNumber toAdd = new BigNumber(num); // creates the _head for the new list.
-        IntNode p = _head;
+public BigNumber addLong (long num){
+        BigNumber otherList = new BigNumber(num);
+      
+        if(_head != null || otherList._head != null){
+               otherList._head = addLong(otherList._head, _head);
+               
+            }
+            return otherList;
+        }
         
+        private IntNode addLong(IntNode p1, IntNode p2){
+        /* ============= CALCULCATING THE SUM ========== */
         
-        
-        
-        
-        if(_head != null){
-          while( p.getNext() != null){
-             p = p.getNext(); 
+        IntNode newList = null; // headnode for the new list
+        IntNode prev = null;
+        IntNode temp = null;
+        int carry = 0, sum;
+        while(p1 != null || p2 != null){
+            sum =  (p1 != null ? p1.getValue() : 0) // get value if not null, if its false return zero.
+                  + (p2 != null ? p2.getValue() : 0);
+            // Update carry for next calculation      
+            carry =  (sum >= 10) ? 1 : 0;
+            
+            // update sum if it is greater than 10
+            sum = sum %10;
+            
+            // create new node with sum as data
+            temp = new IntNode(sum);
+            
+            
+            
+            
+            if( carry > 0 && newList == null){
+                IntNode carryNode = new IntNode(carry);
+                carryNode.setNext(temp);
+                newList = carryNode;
             }
             
-          
+            if(carry > 0 && prev != null){
+                prev.setValue(prev.getValue() + carry);
+            }
+            
+            if(prev != null && p2 !=null ){
+                prev.setNext(temp);
+                
+            }
+            
+            // set prev for next insertion
+            prev = temp;
+            newList = prev;
+            
+            // move the first and second pointers to next nodes
+            if( p1 != null) {
+                p1 = p1.getNext();
+            }
+            if( p2 != null){
+                p2 = p2.getNext();
+            }
+           
+            
         }
-        return null;
-    }
+        
+        if( carry > 0){
+            IntNode tempCarry = new IntNode(carry);
+            temp.setNext(tempCarry);
+        }
+        
+        
+        return newList; }
