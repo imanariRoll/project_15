@@ -1,51 +1,39 @@
 public BigNumber addLong (long num){
-        long x = num;
+        BigNumber list = new BigNumber(num);
+        long number = num;
+        int length1=0;
+        int length2=0;
+        int index = 0;
+        int countLength = 0;
         
         IntNode p;
+        IntNode p2;
         IntNode prev;
-        BigNumber list =new BigNumber();
-        for(p = this._head; p.getNext() !=null; p = p.getNext()); // makes sure p is the last pointer
-        if(p.getNext() == null)
-        {
-            prev = null;
+        
+        for(p = this._head; p.getNext() !=null; p = p.getNext()){
+            length1++;
         }
-        else
+        for(p2 = list._head; p.getNext() !=null; p2 = p2.getNext())
         {
-            for(prev = this._head; prev.getNext().getNext() != null; prev = prev.getNext()); // previous pointer.
+            length2++;
+        }
+        if( length1 > length2){
+        countLength = length1 - length2;
+        }
+        else{
+            countLength = length2 - length1;
+            
         }
         
-        // ONLY DO THIS ONE TIME:
-        IntNode temp = new IntNode(0,null); // new node created.
-        long digit = x % 10;
-        temp.setValue(((int)digit + p.getValue())); // result of sum, last node of new linked list
-                if( list != null && prev != null){
-                prev.setNext(temp);
-                
-                }
-                
-                
-        list._head.setValue(temp.getValue()); // head of list is updated to updated values of temp.
-        list._head.setNext(temp);
-        prev = temp; // prev is now pointing at list head.
-        while( x > 0)
-        { 
-            temp = new IntNode(0,null); // new node created.
-            digit = x % 10;
-            temp.setValue(((int)digit + p.getValue())); // result of sum, last node of new linked list
-            prev.setNext(temp); // prev is now pointing at list head.
-                
-            // ==== update values ==== //
-            if(prev != null)
+        while(number > 0){
+            IntNode indexP = p;
+            
+            if(index > countLength)
             {
-                p = prev; // p points to prev.
-                prev.setNext(null); // prev is now last element.
+              p.setValue(p.getValue() + p2.getValue());  
             }
             
-            x = x / 10; // num is updated.
-            
-            
-            
-            
         }
+        
         return list;
         }
