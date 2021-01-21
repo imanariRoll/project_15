@@ -38,10 +38,31 @@
 
 
 public class BigNumber // acts as LinkedList class
-{
-    static IntNode _head;
-    int val;
-    IntNode next;
+{ // INTLIST INITIALISATION
+    private IntNode _head;
+    
+    
+    
+    public BigNumber(IntNode node){
+        _head = node;
+    }
+    
+    public boolean isEmpty(){
+        return (_head == null);
+    }
+    
+    public void add(int value){
+        IntNode node = new IntNode(value, null);
+        if(isEmpty())
+            _head = node;
+        else{
+            IntNode currentNode = _head;
+            while(currentNode.getNext() != null){
+                currentNode = currentNode.getNext();
+            }
+            currentNode.setNext(node);
+        }
+    }
     
     
     /**
@@ -57,7 +78,7 @@ public class BigNumber // acts as LinkedList class
      
     }
     
-    public BigNumber(int val, IntNode next){this.val =val; this.next = next; }
+
     
     /**
      * 2) Constructor that receives long as param
@@ -72,7 +93,7 @@ public class BigNumber // acts as LinkedList class
         temp = number % 10;
         IntNode newNode = new IntNode((int)temp, null);
         _head = newNode; // starts the list officially.
-        lastNum = newNode; // points at newNode.
+        
         
       
         number = number / 10;
@@ -80,25 +101,83 @@ public class BigNumber // acts as LinkedList class
         
         while( number > 0 ){
             temp = number % 10; // receives second digit
-            newNode = new IntNode((int)temp, lastNum); // creates second node
+            newNode = new IntNode((int)temp, _head); // creates second node
             
             number = number / 10;
             
             
-            lastNum = newNode; // updating last num
+            _head = newNode; // updating last num
             
         }
         
-        _head = lastNum;
         
-       
        
     }
     
-    public BigNumber(BigNumber other){ // needs to copy an entire linked list
-        _head = other._head;
+    public BigNumber(BigNumber other){
+        
+        
+        
+        IntNode tempOther = other._head;
+        this._head = new IntNode (0);
+        IntNode tempThis = this._head;
+        while (tempOther != null)
+        {
+            tempThis.setValue(tempOther.getValue());
+            tempOther = tempOther.getNext(); 
+            if (tempOther != null)
+            {
+                IntNode x1 = new IntNode (0); 
+                tempThis.setNext(x1);
+                tempThis = tempThis.getNext();
+            }
+        }
+
+        BigNumber _numList = new BigNumber (this._head);
+    
+      /*  _head = other._head;
+        BigNumber newList = new BigNumber(); // create a new head, and therefore list.
+        
+        IntNode p = new IntNode(other._head.getValue(),other._head.getNext());
+        
+        
+       // newList._head.setValue(p.getValue());
+       // newList._head.setNext(p.getNext());
+        
+        while(p != null){
+            newList.add(p.getValue());
+            
+            p = p.getNext();
+            
+        } */
+        
         
     }
+    
+   /* private IntNode BigNumber(IntNode list, IntNode newList){
+        IntNode original;
+        IntNode copy = newList;
+        IntNode p = new IntNode(0, null);
+     
+        for(original = list; original !=null; original.getNext()){
+            p.setValue(original.getValue());
+            p.setNext(original.getNext());
+            
+            copy.setValue(p.getValue());
+            copy.setNext(p.getNext());
+            
+            
+            
+        }
+        if( original == null){ // Base case to exit
+           return original;
+        }
+        
+        BigNumber(original, copy);
+        
+        
+        return copy;
+    } */
     
     /**
      * toString method, must be O(n) while n is number
@@ -126,10 +205,10 @@ public class BigNumber // acts as LinkedList class
         while( x != null){
               temp = x.getValue();
               x = x.getNext();
-              return temp + " " + toString(x);
+              return temp + "" + toString(x);
         }
         
-        return " " ;
+        return "" ;
     }
     
     /**
@@ -141,14 +220,56 @@ public class BigNumber // acts as LinkedList class
      */
     
     public int compareTo (BigNumber other){ // Might not work at all, needs to find access to getValue().
-        if(this.val < other.val){
-            return -1;
-        }
-        if(this.val > other.val){
-          return 1;   
+        int result = 0;
+        IntNode p1 = _head;
+        IntNode p2 = other._head;
+        
+        while(p1 != null && p2 != null){
+           if(p1.getValue() < p2.getValue()){
+             result = -1;
+             
+             
+            }
+            
+           if(p1.getValue() > p2.getValue()){
+               result = 1;
+           }
+            
+          
+           if(p1.getValue() == p2.getValue()){
+               result = 0;
+           }
+           
+           
+           
+           p1 = p1.getNext();
+           p2 = p2.getNext();
+            
+           
         }
         
-        return 0;
+        if(p2 == null && p1 != null){ // count p2 as zero if it is null but p1 isnt
+               if(p1.getValue() >= 0){ // if p1 is zero, they are equal
+                  result = 1;
+                }
+               else{
+                   result = 0;
+                }
+            }
+            
+        if( p1 == null && p2 != null){
+            if(p2.getValue() >= 0){
+                result = -1;
+            }
+            else{
+                result = 0;
+            }
+            
+        }
+        
+        
+        
+        return result;
     }
     
     /**
@@ -160,12 +281,14 @@ public class BigNumber // acts as LinkedList class
      */
     
     public BigNumber addBigNumber (BigNumber other){
+            BigNumber list = new BigNumber();
            if(_head != null || other._head != null){
-               addBigNumber(_head, other._head);
+                addBigNumber(_head, other._head);
+                
             }
            
         
-        return null;
+        return list;
     }
     
     private IntNode addBigNumber(IntNode p1, IntNode p2){
@@ -230,11 +353,11 @@ public class BigNumber // acts as LinkedList class
  *     MEMORY- COMPLEXITY:
      */
     
-public BigNumber addLong (long num){
+    public BigNumber addLong (long num){
         BigNumber otherList = new BigNumber(num);
       
         if(_head != null || otherList._head != null){
-               otherList._head = addLong(otherList._head, _head);
+               addBigNumber(otherList);
                
             }
             return otherList;
@@ -299,3 +422,28 @@ public BigNumber addLong (long num){
         
         
         return newList; }
+    /**
+     * subtractBigNumber - subtraction between two bigNumber objects. You must check which one is bigger
+     * and subtract the smaller value from it, retruns a bigNumber object.
+     * 
+     * RUNTIME-COMPLEXITY:
+ *     MEMORY- COMPLEXITY:
+     */
+    
+    public BigNumber subtractBigNumber (BigNumber other){
+        return null;
+    }
+    /**
+     * multBigNumber - multiplication between two bigNumber objects. returns a bigNumber object.
+     * 
+     * RUNTIME-COMPLEXITY: O(n^2) OR n * M
+ *     MEMORY- COMPLEXITY:
+     */
+    
+    public BigNumber multBigNumber (BigNumber other){
+        return null;
+    }
+
+    
+    
+}
